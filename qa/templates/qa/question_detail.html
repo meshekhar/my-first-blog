@@ -1,0 +1,144 @@
+{% extends 'base_redactor.html' %}
+{% load comments %}
+
+{% block content %}
+    <div class="post">
+        <h1>{{ question.title }}</h1>
+        {% if question.published_date %}
+          <span>Asked by <strong>{{ question.author }}</strong> on {{ question.published_date }}</span>
+        {% else %}
+          <a class="btn btn-default" href="{% url 'qa.views.question_publish' slug=question.slug %}">Publish</a>
+        {% endif %}
+        <br><br>
+        {{ question.text|safe }}
+        {% if question.tags %}
+          Tags:
+          {% for tag in question.tags.all %}
+          <h3 class="label label-default">{{tag}}</h3>
+          {% endfor %}
+        {% endif %}
+        <br><br>
+        <a class="btn btn-default btn-sm" href="{% url 'question_edit' slug=question.slug %}">edit</a>
+        <a class="btn btn-default btn-sm" href="{% url 'question_remove' slug=question.slug %}">delete</a>
+        <a id="addCommentBtn" class="btn btn-default btn-sm">add a comment</a>
+    </div>
+
+    <script>
+    $(document).ready(function(){
+      $("#addCommentBtn").click(function () {
+        $("#qcomment").show("slow");
+        $(this).hide("slow");
+      });
+    });
+    </script>
+    <!-- placeholder="Use comments to ask for more information or suggest improvements. Avoid comments like “+1” or “thanks”."-->
+
+    {% if user.is_authenticated %}
+      {% get_comment_form for question as form %}
+      <div id="qcomment" style="display:none">
+        <form action="{% comment_form_target %}" method="POST">
+          {% csrf_token %}
+          {{ form.comment  }}
+          {{ form.honeypot }}
+          {{ form.content_type }}
+          {{ form.object_pk }}
+          {{ form.timestamp }}
+          {{ form.security_hash }}
+          <br>
+          <input type="hidden" name="next" value="{% url 'question_detail' slug=question.slug %}" />
+          <input type="submit" value="Add comment" id="id_submit" class="btn btn-primary" />
+        </form>
+      </div>
+      {% else %}
+      <p>Please <a href="{% url 'login' %}">log in</a> to leave a comment.</p>
+    {% endif %}
+    {% get_comment_count for question as comment_count %}
+    <h4>Comment{{ comment_count|pluralize }}</h4>
+    {% render_comment_list for question %}
+    <hr>
+
+    <!-- Answer block starts -->
+    <h2>{{ question.answers.count }} answer{{ question.answers.count|pluralize }}</h2>
+    {% for answer in question.answers.all %}
+    <script>
+    $(document).ready(function(){
+      $("#addAnswerCommentBtn{{answer.pk}}").click(function () {
+        $("#acomment").show("slow");
+        $(this).hide("slow");
+      });
+    });
+    </script>
+
+      {% if user.is_authenticated %}
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="date">
+              <span>Answer</span> By <strong>{{ answer.author }}</strong> |
+                {{ answer.created_date }}
+                {% if not answer.approved_answer %}
+                    <a class="btn btn-default" href="{% url 'answer_remove' pk=answer.pk %}"><span class="glyphicon glyphicon-remove"></span></a>
+                    <a class="btn btn-default" href="{% url 'answer_approve' pk=answer.pk %}"><span class="glyphicon glyphicon-ok"></span></a>
+                {% endif %}
+            </div>
+            {{ answer.text|safe }}
+            <br>
+            {% get_comment_count for answer as comment_count %}
+            <h4>Comment{{ comment_count|pluralize }}</h4>
+            {% render_comment_list for answer %}
+            <a id="addAnswerCommentBtn{{answer.pk}}" class="btn btn-default btn-sm">add a comment</a>
+          </div>
+        </div>
+
+        <!-- +++++++++ Answer comment stars +++++++++ -->
+        {% if user.is_authenticated %}
+          {% get_comment_form for answer as form %}
+          <div id="acomment" style="display:none">
+            <form action="{% comment_form_target %}" method="POST">
+              {% csrf_token %}
+              {{ form.comment  }}
+              {{ form.honeypot }}
+              {{ form.content_type }}
+              {{ form.object_pk }}
+              {{ form.timestamp }}
+              {{ form.security_hash }}
+              <br>
+              <input type="hidden" name="next" value="{% url 'question_detail' slug=question.slug %}" />
+              <input type="submit" value="Add comment" id="id_submit" class="btn btn-primary" />
+            </form>
+          </div>
+          {% else %}
+          <p>Please <a href="{% url 'login' %}">log in</a> to leave a comment.</p>
+        {% endif %}
+      <!-- ++++++++++ End of the answer comment +++++++++ -->
+      {% else %}
+        <p>Please <a href="{% url 'login' %}">log in</a> to answer this question.</p>
+      {% endif %}
+        {% empty %}
+          <p>Do you know the answer or know someone who can answer?</p>
+    {% endfor %}
+
+    <form action="{% url 'add_answer_to_question' slug=question.slug %}"
+    method="POST" class="post-form">
+      {% if form.errors %}
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endif %}
+        {% csrf_token %}
+        <br>
+        <hr>
+        <h2 for="text">Your Answer:</h2>
+        <textarea id="answer_text" type="text" name="text" value="{{ text }}"></textarea>
+        <button type="submit" class="btn btn-primary">Answer</button>
+    </form>
+    <!-- Answer block ends -->
+{% endblock %}

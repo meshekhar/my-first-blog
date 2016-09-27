@@ -1,0 +1,59 @@
+{% load staticfiles %}
+<html>
+  <head>
+    <title>Django Girls blog</title>
+      <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+      <link href='http://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
+      <link rel="stylesheet" href="{% static 'css/blog.css' %}">
+      <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+      integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+      crossorigin="anonymous"></script>
+
+      <link rel="stylesheet" href="/static/redactor/css/redactor.css" />
+      <script src="/static/redactor/redactor.js"></script>
+
+      <script>
+      $(document).ready(function(){
+         $('.messages').delay(5000).fadeOut();
+      });
+      </script>
+      <script type="text/javascript">
+      $(function()
+      {
+        $('.redactor-box').redactor({
+          minHeight: 200 // pixels
+        });
+        $('#answer_text').redactor({
+          minHeight: 200 // pixels
+        });
+      });
+      </script>
+
+  </head>
+    <body>
+      {% include "nav.html" %}
+      <br>
+      <br>
+          {% if messages %}
+            <div class="messages">
+              <div class="row">
+                <div class="col-md-8 col-md-offset-2">
+                  {% for message in messages %}
+                    <p {% if message.tags %}
+                       class="{{ message.tags }}" >
+                    {% endif %}>
+                    {{ message }}</p>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          {% endif %}
+
+          <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+              {% block content %}
+              {% endblock %}
+            </div>
+          </div>
+    </body>
+</html>

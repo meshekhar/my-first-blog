@@ -1,14 +1,63 @@
-{% extends 'blog/base.html' %}
+{% extends 'base.html' %}
 
 {% block content %}
     <div class="post">
         <h1>{{ post.title }}</h1>
         {% if post.published_date %}
-            <div class="date">
-                {{ post.published_date }}
-            </div>
+          <span>Written by <strong>{{ post.author }}</strong>
+            on {{ post.published_date }}</span>
+        {% else %}
+          <a class="btn btn-default" href="{% url 'blog.views.post_publish' slug=post.slug %}">Publish</a>
         {% endif %}
-        <a class="btn btn-default" href="{% url 'post_edit' pk=post.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
+        <a class="btn btn-default" href="{% url 'post_edit' slug=post.slug %}">
+          <span class="glyphicon glyphicon-pencil"></span>
+        </a>
+        <a class="btn btn-default" href="{% url 'post_remove' slug=post.slug %}">
+          <span class="glyphicon glyphicon-remove"></span>
+        </a>
+        <br><br>
         <p>{{ post.text|linebreaksbr }}</p>
+        {% if post.tags %}
+          Tags: <span>{{ post.tags.all | join:", " }}</span>
+        {% endif %}
     </div>
+    <hr>
+    {% for comment in post.comments.all %}
+    {% if user.is_authenticated or comment.approved_comment %}
+    <div class="comment">
+        <div class="date">
+            {{ comment.created_date }}
+            {% if not comment.approved_comment %}
+                <a class="btn btn-default" href="{% url 'comment_remove' pk=comment.pk %}"><span class="glyphicon glyphicon-remove"></span></a>
+                <a class="btn btn-default" href="{% url 'comment_approve' pk=comment.pk %}"><span class="glyphicon glyphicon-ok"></span></a>
+            {% endif %}
+        </div>
+        <strong>{{ comment.author }}</strong>
+        <p>{{ comment.text|linebreaks }}</p>
+    </div>
+    {% endif %}
+{% empty %}
+    <p>No comments here yet :(</p>
+{% endfor %}
+
+<!-- <a class="btn btn-default" href="{% url 'add_comment_to_post' pk=post.pk %}">Add comment</a> -->
+<form method="POST" class="post-form">
+  {% if form.errors %}
+    {% for field in form %}
+        {% for error in field.errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+        <div class="alert alert-danger">
+            <strong>{{ error|escape }}</strong>
+        </div>
+    {% endfor %}
+  {% endif %}
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="save btn btn-default">Save</button>
+</form>
 {% endblock %}

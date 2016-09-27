@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% for question in questions %}
+        <div class="post">
+            <h1><a href="{% url 'question_detail' slug=question.slug %}">{{ question.title }}</a></h1>
+            <small><div class="date">{{ question.published_date }}</div></small>
+            <p>{{ question.text|safe }}</p>
+        </div>
+    {% endfor %}
+{% endblock %}

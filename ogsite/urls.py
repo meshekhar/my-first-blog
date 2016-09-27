@@ -1,5 +1,4 @@
 """ogsite URL Configuration
-
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.9/topics/http/urls/
 Examples:
@@ -14,10 +13,19 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 
-from django.conf.urls import url, include
-from django.contrib import admin
+from django.conf.urls import include, url, patterns
+from django.contrib.auth import views
 
-urlpatterns = [
-    url(r'^admin/', admin.site.urls),
+from django.contrib import admin
+admin.autodiscover()
+
+urlpatterns = patterns('',
+    url(r'^redactor/', include('redactor.urls')),
+    url(r'^admin/', include(admin.site.urls)),
+    url(r'^accounts/login/$', views.login, name='login'),
+    url(r'^accounts/logout/$', views.logout, name='logout', kwargs={'next_page': '/'}),
     url(r'', include('blog.urls')),
-]
+    url(r'', include('qa.urls')),
+    url(r'^comments/', include('django_comments.urls')),
+    url(r'', include('django.contrib.flatpages.urls')),
+)
