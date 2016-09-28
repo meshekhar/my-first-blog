@@ -14,7 +14,7 @@
 
       <script>
       $(document).ready(function(){
-         $('.messages').delay(5000).fadeOut();
+         $('.messages').delay(3500).fadeOut("slow");
       });
       </script>
       <script type="text/javascript">
@@ -34,20 +34,7 @@
       {% include "nav.html" %}
       <br>
       <br>
-          {% if messages %}
-            <div class="messages">
-              <div class="row">
-                <div class="col-md-8 col-md-offset-2">
-                  {% for message in messages %}
-                    <p {% if message.tags %}
-                       class="{{ message.tags }}" >
-                    {% endif %}>
-                    {{ message }}</p>
-                  {% endfor %}
-                </div>
-              </div>
-            </div>
-          {% endif %}
+          {% include "msg.html" %}
 
           <div class="row">
             <div class="col-md-8 col-md-offset-2">

@@ -22,10 +22,12 @@ admin.autodiscover()
 urlpatterns = patterns('',
     url(r'^redactor/', include('redactor.urls')),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^accounts/', include('allauth.urls')),
     url(r'^accounts/login/$', views.login, name='login'),
     url(r'^accounts/logout/$', views.logout, name='logout', kwargs={'next_page': '/'}),
     url(r'', include('blog.urls')),
     url(r'', include('qa.urls')),
+    url(r'', include('apps.urls')),
     url(r'^comments/', include('django_comments.urls')),
     url(r'', include('django.contrib.flatpages.urls')),
 )

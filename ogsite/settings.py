@@ -42,11 +42,23 @@ INSTALLED_APPS = [
     'redactor',
     'blog',
     'qa',
+    'apps',
     'django_comments',
     'og_comments_app',
-    'taggit'
-]
+    'taggit',
+    #'numpy',
+    #User registration apps
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    # ... include the providers you want to enable:
+    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.google',
+    #'allauth.socialaccount.providers.linkedin',
+    'allauth.socialaccount.providers.linkedin_oauth2',
+    'allauth.socialaccount.providers.twitter',
 
+]
 COMMENTS_APP = 'og_comments_app'
 
 MIDDLEWARE_CLASSES = [
@@ -77,6 +89,16 @@ TEMPLATES = [
         },
     },
 ]
+
+AUTHENTICATION_BACKENDS = (
+
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+
+)
 
 WSGI_APPLICATION = 'ogsite.wsgi.application'
 
