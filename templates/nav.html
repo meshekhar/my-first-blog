@@ -14,7 +14,7 @@
             <li><a href="{% url 'blog.views.post_list' %}">Articles</a></li>
             <li><a href="{% url 'qa.views.question_list' %}">Questions</a></li>
             {% if user.is_authenticated %}
-              <li><a href="{% url 'post_draft_list' %}">UnAnswered</a></li>
+              <li><a href="{% url 'question_draft_list' %}">Unpublished</a></li>
             {% endif %}
           </ul>
 

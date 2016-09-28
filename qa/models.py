@@ -12,7 +12,6 @@ class Question(models.Model):
     title = models.CharField(max_length=140)
     slug = models.SlugField(unique=True)
     text = RedactorField(verbose_name=u'Text')
-    #text = models.TextField()
     tags = TaggableManager()
     created_date = models.DateTimeField(default=timezone.now)
     published_date = models.DateTimeField(blank=True, null=True)

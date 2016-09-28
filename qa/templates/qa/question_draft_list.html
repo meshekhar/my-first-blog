@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Unpublished Questions</h2>
+    <hr>
+    {% for question in questions %}
+        <div class="question">
+            <h1>
+              <a href="{% url 'qa.views.question_detail' slug=question.slug %}">{{ question.title }}</a>
+            </h1>
+            <p class="date">created: {{ question.created_date|date:'d-m-Y' }}</p>
+            <p>{{ question.text|safe|truncatechars:200 }}</p>
+        </div>
+    {% endfor %}
+
+{% endblock %}
