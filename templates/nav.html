@@ -13,6 +13,7 @@
           <ul class="nav navbar-nav">
             <li><a href="{% url 'blog.views.post_list' %}">Articles</a></li>
             <li><a href="{% url 'qa.views.question_list' %}">Questions</a></li>
+            <li><a href="{% url 'taglist' %}">Tags</a></li>            
             {% if user.is_authenticated %}
               <li><a href="{% url 'qa.views.question_draft_list' %}">Unpublished</a></li>
             {% endif %}
@@ -22,7 +23,11 @@
           {% if user.is_authenticated %}
             <li><a href="{% url 'post_new' %}" >New Post</a></li>
             <li><a href="{% url 'question_new' %}" >Ask Question</a></li>
-            <li><a href="{% url 'post_draft_list' %}">Hello {{ user.username }}</a>
+            {% if user.is_superuser %}
+              <li><a href="admin/">Hello Admin</a>
+            {% else %}
+              <li><a href="{% url 'post_draft_list' %}">Hello {{ user.username }}</a>
+            {% endif %}
             <li><a href="{% url 'logout' %}">Log out</a></li>
           {% else %}
             <li><a href="{% url 'login' %}">Login</a></li>

@@ -4,9 +4,11 @@ from django.shortcuts import render, get_object_or_404, redirect, render_to_resp
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
+from django.contrib import messages
+from django.core.paginator import Paginator
+
 from .models import Question, Answer
 from .forms import QuestionForm, AnswerForm
-from django.contrib import messages
 
 def question_list(request):
     questions = Question.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
@@ -52,6 +54,10 @@ def question_edit(request, slug):
 def question_draft_list(request):
     questions = Question.objects.filter(published_date__isnull=True).order_by('created_date')
     return render(request, 'qa/question_draft_list.html', {'questions': questions})
+
+def get_questions_by_tag(request, tag_slug):
+    questions = Question.objects.filter(tags__name__in=[tag_slug])
+    return render(request, 'question_tag_list.html', { 'questions': questions })    
 
 @login_required
 def question_publish(request, slug):

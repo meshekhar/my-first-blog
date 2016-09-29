@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Tags</h2>
+  <hr>
+    {% for tag in tags %}
+      <div class="col-sm-6 col-md-4">
+        <div class="thumbnail">
+          <div class="caption">
+            <h3>{{tag.name}}</h3>
+            <p>Tag description needs implementation</p>
+            <p>
+              <a href="#" class="btn btn-primary" role="button">Questions</a>
+              <a href="#" class="btn btn-info" role="button">Posts</a>
+            </p>
+            <p>
+              <a href="#" class="btn btn-link" role="button">Edit</a>
+              <a href="#" class="btn btn-link" role="button">Delete</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+{% endblock %}

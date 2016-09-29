@@ -12,13 +12,12 @@
         <br>
         <br>
         {{ question.text|safe }}
-
         {% if question.tags %}
         <br>
         <br>
           Tags:
           {% for tag in question.tags.all %}
-          <h3 class="label label-default">{{tag}}</h3>
+            <h3 class="label label-default">{{tag}}</h3>
           {% endfor %}
         {% endif %}
         <br><br>

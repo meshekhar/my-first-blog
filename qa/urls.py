@@ -16,5 +16,4 @@ urlpatterns = [
     url(r'^answer/(?P<pk>\d+)/approve/$', views.answer_approve, name='answer_approve'),
     url(r'^answer/(?P<pk>\d+)/select/$', views.answer_select, name='answer_select'),
     url(r'^answer/(?P<pk>\d+)/remove/$', views.answer_remove, name='answer_remove'),
-
 ]

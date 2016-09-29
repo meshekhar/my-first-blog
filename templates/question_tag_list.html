@@ -6,13 +6,12 @@
     {% for question in questions %}
         <div class="post">
             <h2><a href="{% url 'question_detail' slug=question.slug %}">{{ question.title }}</a></h2>
-            <small><div class="date">{{ question.published_date }}</div></small>
             {{ question.text|safe|truncatechars:200 }}
         </div>
         {% if question.tags %}
           Tags:
           {% for tag in question.tags.all %}
-            <a class="label label-default" href="/tag/{{ tag.slug }}/">{{ tag.name }}</a>
+            <a class="label label-default" href="/tag/{{ tag.slug }}">{{ tag.name }}</a>
           {% endfor %}
         {% endif %}
         <hr>
